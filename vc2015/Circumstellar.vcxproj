@@ -97,12 +97,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\BlackHole.h" />
     <ClInclude Include="..\include\CircumstellarApp.h" />
     <ClInclude Include="..\include\Dust.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\BlackHole.cpp" />
     <ClCompile Include="..\src\CircumstellarApp.cpp" />
     <ClCompile Include="..\src\Dust.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\shaders\black_hole.frag" />
+    <None Include="..\assets\shaders\black_hole.vert" />
+    <None Include="..\assets\shaders\blur.frag" />
+    <None Include="..\assets\shaders\dust_cloud.frag" />
+    <None Include="..\assets\shaders\dust_cloud.vert" />
+    <None Include="..\assets\shaders\dust_cloud_tf.vert" />
+    <None Include="..\assets\shaders\passthru.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -4,6 +4,7 @@
 #include "cinder/CameraUi.h"
 #include "cinder/gl/gl.h"
 #include "cinder/ObjLoader.h"
+#include "BlackHole.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -19,10 +20,7 @@ public:
 	void draw() override;
 
 private:
-	gl::VboMeshRef		mDiskMesh;
-	gl::GlslProgRef		mDiskShader;
-	gl::Texture2dRef	mDiskTex,
-						mMaskTex;
+	CS_Dust::BlackHoleRef	mBlackHole;
 
 	CameraPersp		mCamera;
 	CameraUi		mCtrl;
