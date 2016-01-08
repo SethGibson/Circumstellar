@@ -3,3 +3,5 @@
 *.sdf
 x64
 .vs
+*.mel
+.mayaSwatches
