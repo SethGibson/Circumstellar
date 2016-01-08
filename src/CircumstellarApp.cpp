@@ -1,34 +1,20 @@
-#include "cinder/app/App.h"
-#include "cinder/app/RendererGl.h"
-#include "cinder/gl/gl.h"
+#include "CircumstellarApp.h"
 
-using namespace ci;
-using namespace ci::app;
-using namespace std;
-
-class CircumstellarApp : public App {
-  public:
-	void setup() override;
-	void mouseDown( MouseEvent event ) override;
-	void update() override;
-	void draw() override;
-};
-
-void CircumstellarApp::setup()
+void Circumstellar::setup()
 {
 }
 
-void CircumstellarApp::mouseDown( MouseEvent event )
+void Circumstellar::mouseDown( MouseEvent event )
 {
 }
 
-void CircumstellarApp::update()
+void Circumstellar::update()
 {
 }
 
-void CircumstellarApp::draw()
+void Circumstellar::draw()
 {
 	gl::clear( Color( 0, 0, 0 ) ); 
 }
 
-CINDER_APP( CircumstellarApp, RendererGl )
+CINDER_APP( Circumstellar, RendererGl )
