@@ -98,13 +98,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\CircumstellarApp.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\assets\shaders\disk_dust.frag" />
-    <None Include="..\assets\shaders\disk_dust.vert" />
+    <ClInclude Include="..\include\Dust.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\CircumstellarApp.cpp" />
+    <ClCompile Include="..\src\Dust.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
