@@ -98,9 +98,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\CircumstellarApp.h" />
-    <ClInclude Include="..\include\Resources.h" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="..\assets\shaders\disk_dust.frag" />
+    <None Include="..\assets\shaders\disk_dust.vert" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\CircumstellarApp.cpp" />
   </ItemGroup>
