@@ -1,5 +1,4 @@
 #pragma once
-#include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
 
 using namespace std;
@@ -10,7 +9,7 @@ class Circumstellar;
 namespace CS_Dust
 {
 	class BlackHole;
-	typedef std::shared_ptr<BlackHole> BlackHoleRef;
+	typedef shared_ptr<BlackHole> BlackHoleRef;
 
 	class BlackHole
 	{
