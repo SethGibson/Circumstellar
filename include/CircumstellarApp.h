@@ -24,4 +24,6 @@ private:
 
 	CameraPersp		mCamera;
 	CameraUi		mCtrl;
+
+	float			mMaxDist;
 };

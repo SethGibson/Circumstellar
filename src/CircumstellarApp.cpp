@@ -2,10 +2,11 @@
 
 void Circumstellar::setup()
 {
+	mMaxDist = 3.0f;
 	mBlackHole = CS_Dust::BlackHole::create("meshes/MSH_CS.obj", "shaders/black_hole.vert", "shaders/black_hole.frag", "textures/TX_BlackHole.tif", this);
 
 	mCamera.setPerspective(90.0f, getWindowAspectRatio(), 0.1f, 100.0f);
-	mCamera.lookAt(vec3(0,0,3), vec3(0,0,0), vec3(0, 1, 0));
+	mCamera.lookAt(vec3(0,0,mMaxDist), vec3(), vec3(0, 1, 0));
 
 	mCtrl.setCamera(&mCamera);
 
