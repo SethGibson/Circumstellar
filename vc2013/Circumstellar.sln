@@ -1,7 +1,14 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Circumstellar", "Circumstellar.vcxproj", "{3FB9C3E4-113D-4717-B220-7F4FB2E7B442}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Previz", "Previz", "{D1DB231B-0597-4EB7-B794-D6CF1FECAD0C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DustPreviz", "..\_tests\DustPreviz\vc2013\DustPreviz.vcxproj", "{186C2B54-F5A3-4381-B86E-731D341A3C33}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DustTest", "..\_tests\DustTest\vc2013\DustTest.vcxproj", "{DAF0922F-4FE0-4201-A337-6950E838EA29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +20,20 @@ Global
 		{3FB9C3E4-113D-4717-B220-7F4FB2E7B442}.Debug|x64.Build.0 = Debug|x64
 		{3FB9C3E4-113D-4717-B220-7F4FB2E7B442}.Release|x64.ActiveCfg = Release|x64
 		{3FB9C3E4-113D-4717-B220-7F4FB2E7B442}.Release|x64.Build.0 = Release|x64
+		{186C2B54-F5A3-4381-B86E-731D341A3C33}.Debug|x64.ActiveCfg = Debug|x64
+		{186C2B54-F5A3-4381-B86E-731D341A3C33}.Debug|x64.Build.0 = Debug|x64
+		{186C2B54-F5A3-4381-B86E-731D341A3C33}.Release|x64.ActiveCfg = Release|x64
+		{186C2B54-F5A3-4381-B86E-731D341A3C33}.Release|x64.Build.0 = Release|x64
+		{DAF0922F-4FE0-4201-A337-6950E838EA29}.Debug|x64.ActiveCfg = Debug|x64
+		{DAF0922F-4FE0-4201-A337-6950E838EA29}.Debug|x64.Build.0 = Debug|x64
+		{DAF0922F-4FE0-4201-A337-6950E838EA29}.Release|x64.ActiveCfg = Release|x64
+		{DAF0922F-4FE0-4201-A337-6950E838EA29}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{186C2B54-F5A3-4381-B86E-731D341A3C33} = {D1DB231B-0597-4EB7-B794-D6CF1FECAD0C}
+		{DAF0922F-4FE0-4201-A337-6950E838EA29} = {D1DB231B-0597-4EB7-B794-D6CF1FECAD0C}
 	EndGlobalSection
 EndGlobal
