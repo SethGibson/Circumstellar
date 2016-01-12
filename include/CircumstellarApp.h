@@ -5,6 +5,7 @@
 #include "cinder/gl/gl.h"
 #include "cinder/ObjLoader.h"
 #include "BlackHole.h"
+#include "Dust.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -21,7 +22,10 @@ public:
 
 private:
 	CS_Dust::BlackHoleRef	mBlackHole;
+	CS_Dust::DustCloudRef	mDustCloud;
 
 	CameraPersp		mCamera;
 	CameraUi		mCtrl;
+
+	float			mMaxDist;
 };
