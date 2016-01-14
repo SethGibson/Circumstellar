@@ -114,6 +114,8 @@
     <None Include="..\assets\shaders\dust_cloud.vert" />
     <None Include="..\assets\shaders\dust_cloud_tf.vert" />
     <None Include="..\assets\shaders\passthru.vert" />
+    <None Include="..\assets\shaders\sprite.frag" />
+    <None Include="..\assets\shaders\sprite.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

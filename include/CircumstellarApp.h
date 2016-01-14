@@ -3,6 +3,7 @@
 #include "cinder/Camera.h"
 #include "cinder/CameraUi.h"
 #include "cinder/gl/gl.h"
+#include "cinder/Log.h"
 #include "cinder/ObjLoader.h"
 #include "BlackHole.h"
 #include "Dust.h"

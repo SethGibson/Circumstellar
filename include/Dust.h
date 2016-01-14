@@ -12,7 +12,7 @@ namespace CS_Dust
 	struct Dust
 	{
 		Dust(){}
-		Dust(float pRadius, float pDist);
+		Dust(float pRadius, float pAngle, float pDist, float pVel, float pSize);
 
 		void Step(float pDist);
 
@@ -33,14 +33,22 @@ namespace CS_Dust
 		void Update();
 		void Draw(const CameraPersp &pCam);	//Debug billboards
 
+		// DEBUG
+		vec3 MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const float &pAspect, const CameraPersp & pCam);
+		//
 	protected:
 		DustCloud() {}
 		DustCloud(string pTFShader, string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
 
 	private:
+		vec2 r2p(vec2 pR);
+
 		size_t			mMaxDust;
-		float			mMaxDist;
-		float			mMaxRadius;
+		float			mMaxDist,
+						mMaxRadius,
+						mTargetZ;
+
+		vec3			mDebugClickPos;
 
 		vector<Dust>	mParticles;
 		gl::GlslProgRef mShaderTF,
