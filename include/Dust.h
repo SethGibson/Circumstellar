@@ -7,20 +7,51 @@ using namespace ci;
 
 class Circumstellar;
 
+
 namespace CS_Dust
 {
+	struct DustVel
+	{
+		float Linear;
+		float Angular;
+		DustVel() {}
+		DustVel(float pX, float pY) : Linear(pX), Angular(pY) {}
+		DustVel(vec2 pVel) : Linear(pVel.x), Angular(pVel.y) {}
+	};
+
+	struct DustAngRad
+	{
+		float Angle;
+		float Radius_0;
+		float Radius_1;
+		DustAngRad() {}
+		DustAngRad(float pX, float pY) : Angle(pX), Radius_0(pY) {}
+		DustAngRad(vec2 pVel) : Angle(pVel.x), Radius_0(pVel.y) {}
+	};
+
+	struct DustDepth
+	{
+		float Initial;
+		float Current;
+		DustDepth() {}
+		DustDepth(float pDepth) : Initial(pDepth), Current(pDepth) {}
+	};
+
 	struct Dust
 	{
 		Dust(){}
-		Dust(float pRadius, float pAngle, float pDist, float pVel, float pSize);
+		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize);
 
-		void Step(float pDist);
+		void Step();
 
-		bool Live;
-		vec2 Vel;	//x = linear, y = angular
-		vec3 Pos;
-		vec3 Angle; //x = Angle, y = Radius_0, z=Radius_1
-		float Size;
+		bool		Live;
+		DustVel		Speed;
+		DustAngRad	Polars;
+		DustDepth	Distance;
+		float		Size;
+
+		vec3		DrawPos;
+		
 	};
 
 	class DustCloud;
@@ -34,15 +65,13 @@ namespace CS_Dust
 		void Draw(const CameraPersp &pCam);	//Debug billboards
 
 		// DEBUG
-		vec3 MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const float &pAspect, const CameraPersp & pCam);
+		vec3 MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam);
 		//
 	protected:
 		DustCloud() {}
 		DustCloud(string pTFShader, string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
 
 	private:
-		vec2 r2p(vec2 pR);
-
 		size_t			mMaxDust;
 		float			mMaxDist,
 						mMaxRadius,

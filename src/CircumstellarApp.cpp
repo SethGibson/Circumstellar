@@ -20,8 +20,7 @@ void Circumstellar::setup()
 void Circumstellar::mouseDown( MouseEvent event )
 {
 	//mCtrl.mouseDown(event);
-	auto p = mDustCloud->MouseSpawn(vec2(event.getPos()), vec2(getWindowSize()), getWindowAspectRatio(), mCamera);
-	CI_LOG_I("Mouse Spawn At: " << p.x << "," << p.y << "," << p.z);
+	mDustCloud->MouseSpawn(vec2(event.getPos()), vec2(getWindowSize()), mCamera);
 }
 
 void Circumstellar::mouseDrag(MouseEvent event)

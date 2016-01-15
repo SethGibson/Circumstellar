@@ -3,49 +3,42 @@
 
 namespace CS_Dust
 {
-	Dust::Dust(float pRadius, float pAngle, float pDist, float pVel, float pSize=0) : Live(true)
+	Dust::Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize=0) : Live(true)
 	{
-		Vel.x = randFloat(0.005f, 0.01f);
-		if (pVel == -1.0f)
-			Vel.y = randFloat(0.01f, 0.05f);
+		if (pLinear > 0 && pAngular>0)
+			Speed = DustVel(pLinear, pAngular);
 		else
-			Vel.y = pVel;
-		if (pSize < 0)
-			Size = randFloat(0.01f, 0.035f);
-		else
-			Size = pSize;
-		if (pAngle < 0)
-			Angle.x = randFloat(0.0f, 2.f*M_PI);
-		else
-			Angle.x = pAngle;
+		{
+			Speed.Linear = pLinear <= 0 ? randFloat(0.001f, 0.01f) : pLinear;
+			Speed.Angular = pAngular <= 0 ? randFloat(0.025f, 0.075f) : pAngular;
+		}
 
-		Angle.y = pRadius;
-		Angle.z = pRadius;
-
-		Pos.x = math<float>::cos(Angle.x)*Angle.z;
-		Pos.y = math<float>::sin(Angle.x)*Angle.z;
-		Pos.z = pDist;
-
+		Polars.Angle = pAngle <= 0 ? randFloat(0.0f, 2.f*M_PI) : pAngle;
+		Polars.Radius_0 = pRadius<=0 ? randFloat(0.25f,0.75f) : pRadius;
+		Distance = DustDepth(pDepth);
+		Size = pSize <= 0 ? randFloat(0.01f, 0.035f) : pSize;
 	}
 
-	void Dust::Step(float pDist)
+	void Dust::Step()
 	{
-		Pos.z -= Vel.x;
-		if (Pos.z > 0.5f)
+		if (Distance.Current > 0.5f)
 		{
-			Angle.x += Vel.y;
-			Angle.z = Angle.y * (Pos.z / pDist);
+			Distance.Current -= Speed.Linear;
+			Polars.Angle -= Speed.Angular;
+			Polars.Radius_1 = lerp<float>(0.0f, Polars.Radius_0, Distance.Current / Distance.Initial);
 
-			Pos.x = math<float>::cos(Angle.x)*Angle.z;
-			Pos.y = math<float>::sin(Angle.x)*Angle.z;
+			auto x = math<float>::sin(Polars.Angle)*Polars.Radius_1;
+			auto y = math<float>::cos(Polars.Angle)*Polars.Radius_1;
+			DrawPos = vec3(x, y, Distance.Current);
 		}
+
 		else
 			Live = false;
 	}
 
 	DustCloud::DustCloud(string pTFShader, string pVertShader, string pFragShader,	string pTexture, 
 		size_t pMax, float pDist, float pRadius, 
-		Circumstellar *pParent) : mMaxDust(pMax), mMaxDist(pDist), mMaxRadius(pRadius), mTargetZ(2.5f)
+		Circumstellar *pParent) : mMaxDust(pMax), mMaxDist(pDist-1.0f), mMaxRadius(pRadius), mTargetZ(2.5f)
 	{
 		mDustTex = gl::Texture2d::create(loadImage(loadAsset(pTexture)));
 		mShaderTF = gl::GlslProg::create(pParent->loadAsset(pTFShader));
@@ -53,7 +46,7 @@ namespace CS_Dust
 		mShaderRender->uniform("u_Sampler", 0);
 		mShaderRender->uniform("u_Max", pDist);
 
-		mParticles.push_back(Dust(pRadius, -1, pDist, -1.0f));
+		mParticles.push_back(Dust(-1,-1,-1,-1,mMaxDist));
 		mDebugClickPos = vec3();
 	}
 
@@ -67,7 +60,7 @@ namespace CS_Dust
 		if (mParticles.size() < mMaxDust)
 		{
 			for (int i = 0; i < 3;++i)
-				mParticles.push_back(Dust(mMaxRadius, -1, mMaxDist, -1.0f));
+				mParticles.push_back(Dust(-1, -1, -1, -1, mMaxDist));
 		}
 		for (auto p = begin(mParticles); p != end(mParticles);)
 		{
@@ -75,7 +68,7 @@ namespace CS_Dust
 				p = mParticles.erase(p);
 			else
 			{
-				p->Step(mMaxDist);
+				p->Step();
 				p++;
 			}
 		}
@@ -92,41 +85,31 @@ namespace CS_Dust
 			gl::ScopedTextureBind tex(mDustTex, 0);
 			
 			for (const auto &d : mParticles)
-			{
-				gl::drawBillboard(d.Pos, vec2(d.Size), 0.0f, right, up);
-			}
+				gl::drawBillboard(d.DrawPos, vec2(d.Size), 0.0f, right, up);
 		}
 	}
 
-
-	vec2 DustCloud::r2p(vec2 pR)
+	vec3 DustCloud::MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam)
 	{
-		//return vec2(math<float>::hypot(pR.x, pR.y), math<float>::atan2(pR.x, pR.y));
+		auto ray = pCam.generateRay(pMousePos, getWindowSize());
 
-		float rad = math<float>::sqrt((math<float>::pow(pR.x,2))-(math<float>::pow(pR.y, 2)));
-		float ang = math<float>::atan(pR.x / pR.y);
+		float dist;
+		vec3 rayPos;
+		if (ray.calcPlaneIntersection(vec3(0, 0, mMaxDist), vec3(0, 0, -1), &dist))
+		{
+			rayPos = ray.calcPosition(dist);
+			auto angle = math<float>::atan2(rayPos.x, rayPos.y);
+			if (angle < 0)
+				angle += (2.0f*M_PI);
 
-		return vec2(rad, ang);
+			auto rad = length(vec2(rayPos));
+
+			mParticles.push_back(Dust(-1, -1, angle, rad, mMaxDist, 0.5f));
+			
+			mDebugClickPos = rayPos;
+			return rayPos;
+		}
+
+		return vec3();
 	}
-
-	vec3 DustCloud::MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const float &pAspect, const CameraPersp & pCam)
-	{
-		float u = (pWindowSize.x-pMousePos.x) / pWindowSize.x;
-		//float v = (pWindowSize.y - pMousePos.y) / pWindowSize.y;
-		float v = (pWindowSize.y - pMousePos.y) / pWindowSize.y;
-		auto ray = pCam.generateRay(u, v, pAspect);
-
-		auto newPos = ray.calcPosition(mMaxDist / pCam.getFarClip());
-		
-		//auto dust_0 = r2p(vec2(newPos));
-
-		//make a huge particle for debug purposes
-		mDebugClickPos = vec3(-newPos.x,newPos.y,newPos.z);
-		auto dust_0 = r2p(vec2(mDebugClickPos));
-		CI_LOG_I("Radius Angle Spawn: " << dust_0.x << ", " << dust_0.y);
-
-		mParticles.push_back(Dust(mMaxRadius, dust_0.y, 2.0f, 0.0f, 0.5f));
-
-		return mDebugClickPos;
-	}
-} //CS_Dust
+} 
