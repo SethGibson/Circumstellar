@@ -1,6 +1,6 @@
 #include "CircumstellarApp.h"
 
-static size_t S_MAX_DUST = 100;
+static size_t S_MAX_DUST = 1000;
 
 void Circumstellar::setup()
 {

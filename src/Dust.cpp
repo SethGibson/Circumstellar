@@ -10,7 +10,7 @@ namespace CS_Dust
 		else
 		{
 			Speed.Linear = pLinear <= 0 ? randFloat(0.001f, 0.01f) : pLinear;
-			Speed.Angular = pAngular <= 0 ? randFloat(0.025f, 0.075f) : pAngular;
+			Speed.Angular = pAngular <= 0 ? randFloat(0.01f, 0.05f) : pAngular;
 		}
 
 		Polars.Angle = pAngle <= 0 ? randFloat(0.0f, 2.f*M_PI) : pAngle;
@@ -38,7 +38,7 @@ namespace CS_Dust
 
 	DustCloud::DustCloud(string pTFShader, string pVertShader, string pFragShader,	string pTexture, 
 		size_t pMax, float pDist, float pRadius, 
-		Circumstellar *pParent) : mMaxDust(pMax), mMaxDist(pDist-1.0f), mMaxRadius(pRadius), mTargetZ(2.5f)
+		Circumstellar *pParent) : mMaxDust(pMax), mMaxDist(pDist), mMaxRadius(pRadius), mTargetZ(2.5f)
 	{
 		mDustTex = gl::Texture2d::create(loadImage(loadAsset(pTexture)));
 		mShaderTF = gl::GlslProg::create(pParent->loadAsset(pTFShader));
@@ -47,7 +47,6 @@ namespace CS_Dust
 		mShaderRender->uniform("u_Max", pDist);
 
 		mParticles.push_back(Dust(-1,-1,-1,-1,mMaxDist));
-		mDebugClickPos = vec3();
 	}
 
 	DustCloudRef DustCloud::create(string pTFShader, string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent)
@@ -79,7 +78,6 @@ namespace CS_Dust
 		vec3 right, up;
 		pCam.getBillboardVectors(&right, &up);
 		gl::color(Color::white());
-		gl::drawSphere(mDebugClickPos, 0.005f);
 		{
 			gl::ScopedGlslProg shader(mShaderRender);
 			gl::ScopedTextureBind tex(mDustTex, 0);
@@ -89,13 +87,14 @@ namespace CS_Dust
 		}
 	}
 
-	vec3 DustCloud::MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam)
+	void DustCloud::MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam)
 	{
 		auto ray = pCam.generateRay(pMousePos, getWindowSize());
 
 		float dist;
+		float spawnDist = mMaxDist - 0.5f;
 		vec3 rayPos;
-		if (ray.calcPlaneIntersection(vec3(0, 0, mMaxDist), vec3(0, 0, -1), &dist))
+		if (ray.calcPlaneIntersection(vec3(0, 0, spawnDist), vec3(0, 0, -1), &dist))
 		{
 			rayPos = ray.calcPosition(dist);
 			auto angle = math<float>::atan2(rayPos.x, rayPos.y);
@@ -104,12 +103,7 @@ namespace CS_Dust
 
 			auto rad = length(vec2(rayPos));
 
-			mParticles.push_back(Dust(-1, -1, angle, rad, mMaxDist, 0.5f));
-			
-			mDebugClickPos = rayPos;
-			return rayPos;
+			mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.05f,0.25f)));
 		}
-
-		return vec3();
 	}
 } 

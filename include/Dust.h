@@ -10,7 +10,7 @@ class Circumstellar;
 
 namespace CS_Dust
 {
-	struct DustVel
+	struct DustVel //vec2
 	{
 		float Linear;
 		float Angular;
@@ -19,7 +19,7 @@ namespace CS_Dust
 		DustVel(vec2 pVel) : Linear(pVel.x), Angular(pVel.y) {}
 	};
 
-	struct DustAngRad
+	struct DustAngRad	//vec3
 	{
 		float Angle;
 		float Radius_0;
@@ -29,7 +29,7 @@ namespace CS_Dust
 		DustAngRad(vec2 pVel) : Angle(pVel.x), Radius_0(pVel.y) {}
 	};
 
-	struct DustDepth
+	struct DustDepth	//vec2
 	{
 		float Initial;
 		float Current;
@@ -65,7 +65,7 @@ namespace CS_Dust
 		void Draw(const CameraPersp &pCam);	//Debug billboards
 
 		// DEBUG
-		vec3 MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam);
+		void MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam);
 		//
 	protected:
 		DustCloud() {}
@@ -77,15 +77,19 @@ namespace CS_Dust
 						mMaxRadius,
 						mTargetZ;
 
-		vec3			mDebugClickPos;
-
 		vector<Dust>	mParticles;
-		gl::GlslProgRef mShaderTF,
-						mShaderRender;
+		gl::GlslProgRef mShaderRender;
 
 		gl::Texture2dRef	mDustTex;
 
-
+		/*
+		Tranform feedback the following attrs:
+			vec2 Velocities <-> Dust.DustVel;
+			vec3 AngleRadius <->Dust.DustAngRad;
+			vec2 Distances <-> Dust.DustDepth;
+			vec3 Positions -> DrawPos;
+		*/
+		gl::GlslProgRef				mShaderTF;
 		gl::VaoRef					mVao[2];
 		gl::TransformFeedbackObjRef	mTfo[2];
 		gl::VboRef					mVboPos[2],
