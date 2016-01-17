@@ -1,11 +1,12 @@
 #version 150
+in vec3 InPos;
+in float InVel;
 
-in vec4 oldPos;
-
-out vec4 newPos;
+out vec3 OutPos;
+out float OutVel;
 
 void main()
 {
-	newPos = oldPos;
-	newPos.y+=1;
+	OutVel = InVel;
+	OutPos = vec3(InPos.x,InPos.y-OutVel,InPos.z);
 }
