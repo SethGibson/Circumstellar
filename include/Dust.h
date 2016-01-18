@@ -10,48 +10,17 @@ class Circumstellar;
 
 namespace CS_Dust
 {
-	struct DustVel //vec2
-	{
-		float Linear;
-		float Angular;
-		DustVel() {}
-		DustVel(float pX, float pY) : Linear(pX), Angular(pY) {}
-		DustVel(vec2 pVel) : Linear(pVel.x), Angular(pVel.y) {}
-	};
-
-	struct DustAngRad	//vec3
-	{
-		float Angle;
-		float Radius_0;
-		float Radius_1;
-		DustAngRad() {}
-		DustAngRad(float pX, float pY) : Angle(pX), Radius_0(pY) {}
-		DustAngRad(vec2 pVel) : Angle(pVel.x), Radius_0(pVel.y) {}
-	};
-
-	struct DustDepth	//vec2
-	{
-		float Initial;
-		float Current;
-		DustDepth() {}
-		DustDepth(float pDepth) : Initial(pDepth), Current(pDepth) {}
-	};
-
 	struct Dust
 	{
 		Dust(){}
 		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize);
 
-		void Step();
-
-		bool		Live;
-		DustVel		Speed;
-		DustAngRad	Polars;
-		DustDepth	Distance;
-		float		Size;
-
+		vec3		AngleRadii;	//x=Angle, y=radius init z=radius actual
 		vec3		DrawPos;
-		
+		vec2		Speed; //x = Linear, y = angular
+		vec2		Distance;	//x=initial, y=actual
+		float		Size;
+		bool		Live;
 	};
 
 	class DustCloud;
@@ -60,7 +29,7 @@ namespace CS_Dust
 	class DustCloud
 	{
 	public:
-		static DustCloudRef create(string pTFShader, string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
+		static DustCloudRef create(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
 		void Update();
 		void Draw(const CameraPersp &pCam);	//Debug billboards
 
@@ -69,9 +38,10 @@ namespace CS_Dust
 		//
 	protected:
 		DustCloud() {}
-		DustCloud(string pTFShader, string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
+		DustCloud(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
 
 	private:
+		void setupTF(string pTFShader);
 		size_t			mMaxDust;
 		float			mMaxDist,
 						mMaxRadius,

@@ -6,42 +6,24 @@ namespace CS_Dust
 	Dust::Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize=0) : Live(true)
 	{
 		if (pLinear > 0 && pAngular>0)
-			Speed = DustVel(pLinear, pAngular);
+			Speed = vec2(pLinear, pAngular);
 		else
 		{
-			Speed.Linear = pLinear <= 0 ? randFloat(0.001f, 0.01f) : pLinear;
-			Speed.Angular = pAngular <= 0 ? randFloat(0.01f, 0.05f) : pAngular;
+			Speed.x = pLinear <= 0 ? randFloat(0.001f, 0.01f) : pLinear;
+			Speed.y = pAngular <= 0 ? randFloat(0.01f, 0.05f) : pAngular;
 		}
 
-		Polars.Angle = pAngle <= 0 ? randFloat(0.0f, 2.f*M_PI) : pAngle;
-		Polars.Radius_0 = pRadius<=0 ? randFloat(0.25f,0.75f) : pRadius;
-		Distance = DustDepth(pDepth);
+		AngleRadii.x = pAngle <= 0 ? randFloat(0.0f, 2.f*M_PI) : pAngle;
+		AngleRadii.y = pRadius<=0 ? randFloat(0.25f,0.75f) : pRadius;
+		Distance = vec2(pDepth);
 		Size = pSize <= 0 ? randFloat(0.01f, 0.035f) : pSize;
 	}
 
-	void Dust::Step()
-	{
-		if (Distance.Current > 0.5f)
-		{
-			Distance.Current -= Speed.Linear;
-			Polars.Angle -= Speed.Angular;
-			Polars.Radius_1 = lerp<float>(0.0f, Polars.Radius_0, Distance.Current / Distance.Initial);
-
-			auto x = math<float>::sin(Polars.Angle)*Polars.Radius_1;
-			auto y = math<float>::cos(Polars.Angle)*Polars.Radius_1;
-			DrawPos = vec3(x, y, Distance.Current);
-		}
-
-		else
-			Live = false;
-	}
-
-	DustCloud::DustCloud(string pTFShader, string pVertShader, string pFragShader,	string pTexture, 
+	DustCloud::DustCloud(string pVertShader, string pFragShader,	string pTexture, 
 		size_t pMax, float pDist, float pRadius, 
 		Circumstellar *pParent) : mMaxDust(pMax), mMaxDist(pDist), mMaxRadius(pRadius), mTargetZ(2.5f)
 	{
 		mDustTex = gl::Texture2d::create(loadImage(loadAsset(pTexture)));
-		mShaderTF = gl::GlslProg::create(pParent->loadAsset(pTFShader));
 		mShaderRender = gl::GlslProg::create(pParent->loadAsset(pVertShader), pParent->loadAsset(pFragShader));
 		mShaderRender->uniform("u_Sampler", 0);
 		mShaderRender->uniform("u_Max", pDist);
@@ -49,9 +31,16 @@ namespace CS_Dust
 		mParticles.push_back(Dust(-1,-1,-1,-1,mMaxDist));
 	}
 
-	DustCloudRef DustCloud::create(string pTFShader, string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent)
+	DustCloudRef DustCloud::create(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent)
 	{
-		return DustCloudRef(new DustCloud(pTFShader, pVertShader, pFragShader, pTexture, pMax, pDist, pRadius, pParent));
+		return DustCloudRef(new DustCloud(pVertShader, pFragShader, pTexture, pMax, pDist, pRadius, pParent));
+	}
+
+	void DustCloud::setupTF(string pTFShader)
+	{
+		gl::GlslProg::Format tf;
+		tf.feedbackFormat(GL_INTERLEAVED_ATTRIBS)
+			
 	}
 
 	void DustCloud::Update()
@@ -61,15 +50,10 @@ namespace CS_Dust
 			for (int i = 0; i < 3;++i)
 				mParticles.push_back(Dust(-1, -1, -1, -1, mMaxDist));
 		}
-		for (auto p = begin(mParticles); p != end(mParticles);)
+
+		//	Transform Feedback goes here
 		{
-			if (!p->Live)
-				p = mParticles.erase(p);
-			else
-			{
-				p->Step();
-				p++;
-			}
+
 		}
 	}
 
