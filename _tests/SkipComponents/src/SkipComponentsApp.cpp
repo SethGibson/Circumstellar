@@ -7,7 +7,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-static size_t S_NUM_PTCL = 100;
+static size_t S_NUM_PTCL = 10000;
 
 struct ptcl
 {
@@ -42,10 +42,15 @@ private:
 
 void SkipComponentsApp::setup()
 {
-	setWindowSize(640, 360);
+	setWindowSize(1280, 720);
 	mPong = 1;
-	mShaderRender = gl::GlslProg::create(loadAsset("render.vert"), loadAsset("render.frag"));
-
+	
+	gl::GlslProg::Format rdr;
+	rdr.vertex(loadAsset("render.vert"))
+		.fragment(loadAsset("render.frag"))
+		.attribLocation("o_Pos", 2);
+	mShaderRender = gl::GlslProg::create(rdr);
+	
 	gl::GlslProg::Format tf;
 	vector<string> tfVars
 	{
@@ -64,9 +69,9 @@ void SkipComponentsApp::setup()
 
 	for (int i = 0; i < S_NUM_PTCL; ++i)
 	{
-		float speed = randFloat(0.01f, 0.1f);
+		float speed = randFloat(-0.1f, 0.1f);
 		float angle = randFloat(0.0, 2.0f*M_PI);
-		float rad_0 = randFloat(10.0f, getWindowHeight()*0.5f);
+		float rad_0 = randFloat(getWindowHeight()*0.25f, getWindowHeight()*0.5f);
 		mPoints.push_back(ptcl(speed, vec2(angle, rad_0)));
 	}
 
@@ -83,6 +88,8 @@ void SkipComponentsApp::setup()
 		gl::enableVertexAttribArray(0);
 		gl::vertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(ptcl), (const GLvoid *)offsetof(ptcl, Speed));
 		gl::enableVertexAttribArray(1);
+		gl::vertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(ptcl), (const GLvoid *)offsetof(ptcl, Pos));
+		gl::enableVertexAttribArray(2);
 
 		mTFBuffers[i] = gl::TransformFeedbackObj::create();
 		mTFBuffers[i]->bind();
@@ -118,13 +125,19 @@ void SkipComponentsApp::draw()
 	mDataBuffers[mPong]->unmap();
 
 	gl::clear( Color( 0, 0, 0 ) ); 
-	gl::color(Color::white());
 	gl::setMatricesWindow(getWindowSize());
 	gl::pushModelMatrix();
 	gl::translate(vec2(getWindowSize())*0.5f);
 
-	for (int j = 0; j < S_NUM_PTCL;++j)
-		gl::drawSolidCircle(points[j].Pos, 2.5f);
+	{
+		gl::ScopedVao vao(mAttribBuffers[1-mPong]);
+		gl::ScopedGlslProg rdr(mShaderRender);
+		gl::ScopedState ps(GL_PROGRAM_POINT_SIZE, GL_TRUE);
+
+		gl::setDefaultShaderVars();
+		gl::color(Color::white());
+		gl::drawArrays(GL_POINTS, 0, S_NUM_PTCL);
+	}
 
 	gl::popModelMatrix();
 }
