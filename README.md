@@ -3,6 +3,13 @@
 
 For now, this should build and run against any recent (>=0.9.0) version of Cinder. All previz and the main app are linked in Circumstellar.sln, so go crazy. 
 
+Previz notes:
+- BlackHoleGPU: failed attempt at dynamic buffers and transform feedback
+- CoordConverTest: Mucking about with different methods for going from rect to polar and back. Math enthusiasts will probably note the somewhat ugly hack herein, but it works!
+- DustPreviz: Attractors
+- DustTest: Vizdev for the dustcloud
+- SkipComponents: "Asymmetrical" buffers and interleaved attributes for transform feedback
+- TFMultiAttr: Reacquainting myself with multi-attribute/buffer transform feedback
 **"Accretion Disk" first pass 2016.01.08**
 ![Alt text](/content/doc/circumstellar_2016_01_08.png?raw=true "Optional Title")
 **Attractor test first pass 2016.01.08** (see _tests/DustPreviz)
