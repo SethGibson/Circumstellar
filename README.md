@@ -5,9 +5,9 @@ For now, this should build and run against any recent (>=0.9.0) version of Cinde
 
 **"Accretion Disk" first pass 2016.01.08**
 ![Alt text](/content/doc/circumstellar_2016_01_08.png?raw=true "Optional Title")
-**Attractor test first pass 2016.01.08**
+**Attractor test first pass 2016.01.08** (see _tests/DustPreviz)
 ![Alt text](/content/doc/circumstellar_dust_test_2016_01_08.png?raw=true "Optional Title")
-**Fun with attractors 2016.01.08**
+**Fun with attractors 2016.01.08** (see _tests/DustPreviz)
 ![Alt text](/content/doc/circumstellar_dust_test_2016_01_08_02.png?raw=true "Optional Title")
 **"Accretion Disk" test perspective 2016.01.09**
 ![Alt text](/content/doc/circumstellar_2016_01_09.png?raw=true "Optional Title")
