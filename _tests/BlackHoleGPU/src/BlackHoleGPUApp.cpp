@@ -170,8 +170,6 @@ void BlackHoleGPUApp::update()
 		mPoints.push_back(ptcl(mMaxDist));
 	//TF
 	mDataBuffers[mPong]->bufferData(mPoints.size()*sizeof(ptcl), mPoints.data(), GL_DYNAMIC_DRAW);
-	
-
 }
 
 void BlackHoleGPUApp::draw()
