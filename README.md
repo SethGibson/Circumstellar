@@ -1,6 +1,7 @@
 # Circumstellar
+# An interactive journey beyond the Event Horizon...
 
-An interactive journey beyond the Event Horizon...
+For now, this should build and run against any recent (>=0.9.0) version of Cinder. All previz and the main app are linked in Circumstellar.sln, so go crazy. 
 
 **"Accretion Disk" first pass 2016.01.08**
 ![Alt text](/content/doc/circumstellar_2016_01_08.png?raw=true "Optional Title")
