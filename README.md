@@ -9,7 +9,9 @@ Previz notes:
 - DustPreviz: Attractors
 - DustTest: Vizdev for the dustcloud
 - SkipComponents: "Asymmetrical" buffers and interleaved attributes for transform feedback
-- TFMultiAttr: Reacquainting myself with multi-attribute/buffer transform feedback
+- TFMultiAttr: Reacquainting myself with multi-attribute/buffer transform feedback- 
+
+# And now...Pictures!
 **"Accretion Disk" first pass 2016.01.08**
 ![Alt text](/content/doc/circumstellar_2016_01_08.png?raw=true "Optional Title")
 **Attractor test first pass 2016.01.08** (see _tests/DustPreviz)
