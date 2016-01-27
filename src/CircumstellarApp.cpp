@@ -1,19 +1,17 @@
 #include "CircumstellarApp.h"
 
-static size_t S_MAX_DUST = 1000;
+static size_t S_MAX_DUST = 5000;
 
 void Circumstellar::setup()
 {
 	mMaxDist = 3.0f;
 	mBlackHole = CS_Dust::BlackHole::create("meshes/MSH_CS.obj", "shaders/black_hole.vert", "shaders/black_hole.frag", "textures/TX_BlackHole.tif", this);
-	mDustCloud = CS_Dust::DustCloud::create("shaders/dust_cloud_tf.vert", "shaders/sprite.vert", "shaders/sprite.frag", "textures/TX_Sprite.png", S_MAX_DUST, mMaxDist, 1.0f, this);
-
+	mDustCloud = CS_Dust::DustCloud::create("shaders/dust_cloud.vert", "shaders/dust_cloud.frag", "textures/TX_Sprite.png", S_MAX_DUST, mMaxDist, 1.0f, this);
+	
 	mCamera.setPerspective(90.0f, getWindowAspectRatio(), 0.01f, 100.0f);
 	mCamera.lookAt(vec3(0,0,mMaxDist), vec3(), vec3(0, 1, 0));
 
 	//mCtrl.setCamera(&mCamera);
-
-	//gl::enableDepth();
 	gl::enableAdditiveBlending();
 }
 
@@ -41,10 +39,12 @@ void Circumstellar::draw()
 
 	gl::color(Color::white());
 	mDustCloud->Draw(mCamera);
+
 	gl::pushModelMatrix();
 	gl::scale(vec3(1.5));
 	mBlackHole->Draw(static_cast<float>(getElapsedFrames()));
 	gl::popModelMatrix();
+
 }
 
 void prepareSettings(App::Settings *pSettings)
