@@ -13,14 +13,16 @@ namespace CS_Dust
 	struct Dust
 	{
 		Dust(){}
-		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize);
+		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize, int pStartOffset);
 
 		vec3		AngleRadii;	//x=Angle, y=radius init z=radius actual
 		vec3		DrawPos;
 		vec2		Speed; //x = Linear, y = angular
 		vec2		Distance;	//x=initial, y=actual
 		float		Size;
+		float		Alpha;
 		bool		Live;
+		int			Start;
 	};
 
 	class DustCloud;
@@ -41,7 +43,7 @@ namespace CS_Dust
 		DustCloud(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
 
 	private:
-		void setupTF(string pTFShader);
+		void setupDust();
 		size_t			mMaxDust;
 		float			mMaxDist,
 						mMaxRadius,
@@ -49,21 +51,10 @@ namespace CS_Dust
 
 		vector<Dust>	mParticles;
 		gl::GlslProgRef mShaderRender;
+		gl::VboRef		mDustData;
+		gl::BatchRef	mDustDraw;
 
 		gl::Texture2dRef	mDustTex;
-
-		/*
-		Tranform feedback the following attrs:
-			vec2 Velocities <-> Dust.DustVel;
-			vec3 AngleRadius <->Dust.DustAngRad;
-			vec2 Distances <-> Dust.DustDepth;
-			vec3 Positions -> DrawPos;
-		*/
-		gl::GlslProgRef				mShaderTF;
-		gl::VaoRef					mVao[2];
-		gl::TransformFeedbackObjRef	mTfo[2];
-		gl::VboRef					mVboPos[2],
-									mVboVel[2];
 
 	};
 }

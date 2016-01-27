@@ -71,7 +71,7 @@ void SkipComponentsApp::setup()
 	{
 		float speed = randFloat(-0.1f, 0.1f);
 		float angle = randFloat(0.0, 2.0f*M_PI);
-		float rad_0 = randFloat(getWindowHeight()*0.25f, getWindowHeight()*0.5f);
+		float rad_0 = randFloat(getWindowHeight()*0.4f, getWindowHeight()*0.5f);
 		mPoints.push_back(ptcl(speed, vec2(angle, rad_0)));
 	}
 
@@ -96,6 +96,9 @@ void SkipComponentsApp::setup()
 		gl::bindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, mDataBuffers[i]);
 		mTFBuffers[i]->unbind();
 	}
+
+	gl::clear(Color(0, 0, 0));
+	gl::enableAdditiveBlending();
 }
 
 void SkipComponentsApp::mouseDown( MouseEvent event )
@@ -112,9 +115,12 @@ void SkipComponentsApp::update()
 			gl::ScopedState rDiscard(GL_RASTERIZER_DISCARD, GL_TRUE);
 
 			mTFBuffers[1 - mPong]->bind();
-			gl::beginTransformFeedback(GL_POINTS);
+			mTFBuffers[1 - mPong]->begin(GL_POINTS);
+			//gl::beginTransformFeedback(GL_POINTS);
 			gl::drawArrays(GL_POINTS, 0, S_NUM_PTCL);
-			gl::endTransformFeedback();
+			mTFBuffers[1 - mPong]->end();
+			mTFBuffers[1 - mPong]->unbind();
+			//gl::endTransformFeedback();
 		}
 	}
 }
@@ -124,10 +130,14 @@ void SkipComponentsApp::draw()
 	auto points = reinterpret_cast<ptcl *>(mDataBuffers[mPong]->map(GL_READ_ONLY));
 	mDataBuffers[mPong]->unmap();
 
-	gl::clear( Color( 0, 0, 0 ) ); 
+	gl::clear(Color::black());
 	gl::setMatricesWindow(getWindowSize());
+	//gl::color(ColorA(0, 0, 0, 0.25f));
+	//gl::drawSolidRect(Rectf(vec2(), getWindowSize()));
 	gl::pushModelMatrix();
 	gl::translate(vec2(getWindowSize())*0.5f);
+	//gl::rotate(-(M_PI / 2.0f));
+	gl::rotate(toRadians((float)getElapsedFrames()*0.25f));
 
 	{
 		gl::ScopedVao vao(mAttribBuffers[1-mPong]);
