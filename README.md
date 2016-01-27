@@ -22,7 +22,11 @@ Previz notes:
 ![Alt text](/content/doc/circumstellar_2016_01_09.png?raw=true "Optional Title")
 **Full composite test first pass 2016.01.16**
 ![Alt text](/content/doc/circumstellar_2016_01_16.png?raw=true "Optional Title")
+**Multi attr transform feedback test 2016.01.18**
+![Alt text](/content/doc/multi_attr_tf_2016_01_18.png?raw=true "Optional Title")
 **Transform feedback interleaved and skipped components test 2016.01.19**
 ![Alt text](/content/doc/testing_glsl_attr_mapping.png?raw=true "Optional Title")
+**...A little prettier 2016.01.22**
+![Alt text](/content/doc/skip_components_2016_01_22.png?raw=true "Optional Title")
 **Timed spawners and final mouse interaction 2016.01.26**
 ![Alt text](/content/doc/timed_spawn_2016_01_26.png?raw=true "Optional Title")
