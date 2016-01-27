@@ -13,7 +13,7 @@ namespace CS_Dust
 	struct Dust
 	{
 		Dust(){}
-		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize, int pStartOffset);
+		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize, int pStartOffset, Color pTint);
 
 		vec3		AngleRadii;	//x=Angle, y=radius init z=radius actual
 		vec3		DrawPos;
@@ -23,6 +23,7 @@ namespace CS_Dust
 		float		Alpha;
 		bool		Live;
 		int			Start;
+		Color		Tint;
 	};
 
 	class DustCloud;
@@ -46,6 +47,7 @@ namespace CS_Dust
 		void setupDust();
 		size_t			mMaxDust;
 		float			mMaxDist,
+						mCutoffDist,
 						mMaxRadius,
 						mTargetZ;
 
@@ -55,6 +57,5 @@ namespace CS_Dust
 		gl::BatchRef	mDustDraw;
 
 		gl::Texture2dRef	mDustTex;
-
 	};
 }
