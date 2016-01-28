@@ -28,10 +28,10 @@ class RSDevice {
 	  void start();
 	  void stop();
 	  void update();
-	  const ivec2&			getColorDims();
-	  const ivec2&			getDepthDims();
-	  const Surface8uRef	getColorFrame();
-	  const Channel16uRef	getDepthFrame();
+	  const ivec2&			getColorDims() { return mColorDims; }
+	  const ivec2&			getDepthDims() { return mDepthDims; }
+	  const Surface8uRef	getColorFrame() { return mColorFrame; }
+	  const Channel16uRef	getDepthFrame() { return mDepthFrame; }
 
   protected:
 	  RSDevice();
