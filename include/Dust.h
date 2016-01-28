@@ -1,12 +1,12 @@
 #pragma once
 #include "cinder/gl/gl.h"
 #include "cinder/Rand.h"
+#include "CiLibRS.h"
 
 using namespace std;
 using namespace ci;
 
 class Circumstellar;
-
 
 namespace CS_Dust
 {
@@ -32,21 +32,29 @@ namespace CS_Dust
 	class DustCloud
 	{
 	public:
-		static DustCloudRef create(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
+		static DustCloudRef create(size_t pMax, float pDist, float pRadius, const CameraPersp & pCam);
 		void Update();
 		void Draw(const CameraPersp &pCam);	//Debug billboards
 
 		// DEBUG
-		void MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam);
+		void MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize);
 		//
 	protected:
 		DustCloud() {}
-		DustCloud(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
+		DustCloud(size_t pMax, float pDist, float pRadius, const CameraPersp & pCam);
 
 	private:
 		void setupDust();
+		void setupLibRS();
+
+		void getDrawPoints();
+		void capturePoints();
+
+		const CameraPersp	mCamera;
 		size_t			mMaxDust;
+		int				mCaptureTime;
 		float			mMaxDist,
+						mPlaneDist,
 						mCutoffDist,
 						mMaxRadius,
 						mTargetZ;
@@ -56,6 +64,17 @@ namespace CS_Dust
 		gl::VboRef		mDustData;
 		gl::BatchRef	mDustDraw;
 
-		gl::Texture2dRef	mDustTex;
+		gl::Texture2dRef	mTexDust;
+
+		CiLibRS::RSDeviceRef	mRS;
+		
+		float				mDepthCutoff;
+		vector<vec3>		mDepthPoints;
+		gl::VboRef			mPointData;
+		gl::BatchRef		mPointDraw;
+		gl::Texture2dRef	mTexPoints;
+		gl::GlslProgRef		mShaderPoints;
+		vec2				mDustPlaneMin;
+		vec2				mDustPlaneMax;
 	};
 }

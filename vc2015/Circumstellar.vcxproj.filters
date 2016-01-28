@@ -12,9 +12,6 @@
     <Filter Include="Source Files\shaders">
       <UniqueIdentifier>{b2683f30-64d0-4dd8-b917-93341a2ae1a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\shaders\test">
-      <UniqueIdentifier>{9548a90d-54d9-4d8c-9822-d96247a4a798}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\CircumstellarApp.cpp">
@@ -29,6 +26,9 @@
     <ClCompile Include="..\src\BlackHole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CiLibRS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\CircumstellarApp.h">
@@ -38,6 +38,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\BlackHole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\CiLibRS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -57,17 +60,14 @@
     <None Include="..\assets\shaders\dust_cloud.vert">
       <Filter>Source Files\shaders</Filter>
     </None>
-    <None Include="..\assets\shaders\dust_cloud_tf.vert">
-      <Filter>Source Files\shaders</Filter>
-    </None>
     <None Include="..\assets\shaders\passthru.vert">
       <Filter>Source Files\shaders</Filter>
     </None>
-    <None Include="..\assets\shaders\sprite.frag">
-      <Filter>Source Files\shaders\test</Filter>
+    <None Include="..\assets\shaders\depth_dust.frag">
+      <Filter>Source Files\shaders</Filter>
     </None>
-    <None Include="..\assets\shaders\sprite.vert">
-      <Filter>Source Files\shaders\test</Filter>
+    <None Include="..\assets\shaders\depth_dust.vert">
+      <Filter>Source Files\shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
