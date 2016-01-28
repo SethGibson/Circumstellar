@@ -27,22 +27,22 @@ namespace CS_Dust
 
 	}
 
-	DustCloud::DustCloud(string pVertShader, string pFragShader,	string pTexture, 
-		size_t pMax, float pDist, float pRadius, 
-		Circumstellar *pParent) : mMaxDust(pMax), mMaxDist(pDist), mCutoffDist(1.75f), mMaxRadius(pRadius), mTargetZ(2.5f)
+	DustCloud::DustCloud(size_t pMax, float pDist, float pRadius, const CameraPersp &pCamera) : 
+		mMaxDust(pMax), mMaxDist(pDist), mCutoffDist(1.75f), mMaxRadius(pRadius), mTargetZ(2.5f), mCamera(pCamera)
 	{
-		mDustTex = gl::Texture2d::create(loadImage(loadAsset(pTexture)));
+		//"shaders/dust_cloud.vert", "shaders/dust_cloud.frag", , 
+		mDustTex = gl::Texture2d::create(loadImage(loadAsset("textures/TX_Sprite.png")));
 		
-		mShaderRender = gl::GlslProg::create(pParent->loadAsset(pVertShader), pParent->loadAsset(pFragShader));
+		mShaderRender = gl::GlslProg::create(loadAsset("shaders/dust_cloud.vert"), loadAsset("shaders/dust_cloud.frag"));
 		mShaderRender->uniform("u_Sampler", 0);
 		mShaderRender->uniform("u_Max", pDist);
 
 		setupDust();
 	}
 
-	DustCloudRef DustCloud::create(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent)
+	DustCloudRef DustCloud::create(size_t pMax, float pDist, float pRadius, const CameraPersp &pCamera)
 	{
-		return DustCloudRef(new DustCloud(pVertShader, pFragShader, pTexture, pMax, pDist, pRadius, pParent));
+		return DustCloudRef(new DustCloud(pMax, pDist, pRadius, pCamera));
 	}
 
 	void DustCloud::setupDust()
@@ -105,7 +105,7 @@ namespace CS_Dust
 		mDustData->bufferData(mParticles.size()*sizeof(Dust), mParticles.data(), GL_DYNAMIC_DRAW);
 	}
 
-	void DustCloud::Draw(const CameraPersp &pCam)
+	void DustCloud::Draw()
 	{
 		gl::color(Color::white());
 		{
@@ -114,9 +114,9 @@ namespace CS_Dust
 		}
 	}
 
-	void DustCloud::MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam)
+	void DustCloud::MouseSpawn(const vec2 &pMousePos)
 	{
-		auto ray = pCam.generateRay(pMousePos, getWindowSize());
+		auto ray = mCamera.generateRay(pMousePos, getWindowSize());
 
 		float dist;
 		float spawnDist = mMaxDist - 0.1f;
@@ -129,10 +129,10 @@ namespace CS_Dust
 
 			auto rad = length(vec2(rayPos));
 			
-			auto r = 1.0f;
-			auto g = lmap<float>(pMousePos.x, 0.0f, 1280.0f, 0.0f, 1.0f);
-			auto b = lmap<float>(pMousePos.y, 0.0f, 720.0f, 0.0f, 1.0f);
-			mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.0065f,0.02f), randInt(60,180), Color(r,g,b)));
+			auto r = randFloat(0.0f,0.5f);
+			auto g = lmap<float>(pMousePos.x, 0.0f, 1280.0f, 0.5f, 1.f);
+			auto b = lmap<float>(pMousePos.y, 0.0f, 720.0f, 0.5f, 1.f);
+			mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.0065f,0.025f), 120, Color(r,g,b)));
 		}
 	}
 } 

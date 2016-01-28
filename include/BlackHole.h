@@ -14,13 +14,12 @@ namespace CS_Dust
 	class BlackHole
 	{
 	public:
-		static BlackHoleRef create(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent);
+		static BlackHoleRef create();
 		void Update();
 		void Draw(float pElapsed);
 
 	protected:
-		BlackHole() {}
-		BlackHole(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent);
+		BlackHole();
 
 	private:
 		gl::GlslProgRef			mShader;

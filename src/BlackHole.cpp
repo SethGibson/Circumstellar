@@ -9,18 +9,18 @@ static float S_TIME_SCALE = 0.001f;
 namespace CS_Dust
 {
 	
-	BlackHoleRef BlackHole::create(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent)
+	BlackHoleRef BlackHole::create()
 	{
-		return BlackHoleRef(new BlackHole(pObjFile, pVertShader, pFragShader, pTexture, pParent));
+		return BlackHoleRef(new BlackHole());
 	}
 
-	BlackHole::BlackHole(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent)
+	BlackHole::BlackHole()
 	{
-		mMesh = gl::VboMesh::create(ObjLoader(pParent->loadAsset("meshes/MSH_CS.obj")));
-		mTexMain = gl::Texture2d::create(loadImage(pParent->loadAsset("textures/TX_BlackHole.tif")));
+		mMesh = gl::VboMesh::create(ObjLoader(loadAsset("meshes/MSH_CS.obj")));
+		mTexMain = gl::Texture2d::create(loadImage(loadAsset("textures/TX_BlackHole.tif")));
 		mTexMain->setWrap(GL_REPEAT, GL_REPEAT);
 
-		mShader = gl::GlslProg::create(pParent->loadAsset("shaders/black_hole.vert"), pParent->loadAsset("shaders/black_hole.frag"));
+		mShader = gl::GlslProg::create(loadAsset("shaders/black_hole.vert"), loadAsset("shaders/black_hole.frag"));
 		mShader->uniform("u_samplerRGBA", 0);
 	}
 

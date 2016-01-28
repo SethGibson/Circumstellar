@@ -57,9 +57,6 @@
     <None Include="..\assets\shaders\dust_cloud.vert">
       <Filter>Source Files\shaders</Filter>
     </None>
-    <None Include="..\assets\shaders\dust_cloud_tf.vert">
-      <Filter>Source Files\shaders</Filter>
-    </None>
     <None Include="..\assets\shaders\passthru.vert">
       <Filter>Source Files\shaders</Filter>
     </None>
