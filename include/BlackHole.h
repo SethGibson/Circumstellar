@@ -6,6 +6,8 @@ using namespace ci;
 
 class Circumstellar;
 
+typedef std::pair<vec3, vec3> color_rng;
+
 namespace CS_Dust
 {
 	class BlackHole;
@@ -15,9 +17,13 @@ namespace CS_Dust
 	{
 	public:
 		static BlackHoleRef create(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent);
-		void Update();
-		void Draw(float pElapsed);
+		void Draw();
 
+		void SetK(const vec4 &pK) { mK = pK; }
+		void SetV(const vec3 &pV) { mV = pV; }
+		void SetS(const vec3 &pS) { mS = pS; }
+		void SetColors(const vector<Color> &pColors);
+		void SetElapsed(const float &pElapsed) { mElapsed = pElapsed; }
 	protected:
 		BlackHole() {}
 		BlackHole(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent);
@@ -26,5 +32,11 @@ namespace CS_Dust
 		gl::GlslProgRef			mShader;
 		gl::Texture2dRef		mTexMain;
 		gl::VboMeshRef			mMesh;
+
+		float	mElapsed;
+		vec4	mK;
+		vec3	mV, mS;
+
+		color_rng	mD1, mD2, mD3;
 	};
 }

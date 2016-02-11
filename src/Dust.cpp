@@ -129,10 +129,17 @@ namespace CS_Dust
 
 			auto rad = length(vec2(rayPos));
 			
-			auto r = 1.0f;
-			auto g = lmap<float>(pMousePos.x, 0.0f, 1280.0f, 0.0f, 1.0f);
-			auto b = lmap<float>(pMousePos.y, 0.0f, 720.0f, 0.0f, 1.0f);
-			mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.0065f,0.02f), randInt(60,180), Color(r,g,b)));
+			float r = randFloat(0.0f, 1.0f);
+			float g = 0.0f, b = 0.0f;
+			if(r>0.25f)
+				g = randFloat(0.25f, 1.0f);
+			else {
+				r = 0.0f;
+				b = randFloat(0.5f, 1.0f);
+				g = randFloat(0.0f, 0.25f);
+			}
+			mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.0065f,0.02f), 120
+				, Color(r,g,b)));
 		}
 	}
 } 
