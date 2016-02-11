@@ -6,12 +6,14 @@
 #include "cinder/Log.h"
 #include "cinder/ObjLoader.h"
 #include "cinder/params/Params.h"
+#include "CiDSAPI.h"
 #include "BlackHole.h"
 #include "Dust.h"
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+using namespace CinderDS;
 
 class Circumstellar : public App 
 {
@@ -22,9 +24,13 @@ public:
 	void keyDown(KeyEvent event) override;
 	void update() override;
 	void draw() override;
+	void cleanup() override;
 
 private:
 	void setupGUI();
+	void setupDS();
+
+	void updateDepth();
 
 	CS_Dust::BlackHoleRef	mBlackHole;
 	CS_Dust::DustCloudRef	mDustCloud;
@@ -44,4 +50,7 @@ private:
 					mParamD3a, mParamD3b;
 
 	params::InterfaceGlRef	mGUI;
+
+	CinderDSRef		mDS;
+	Surface8uRef	mRGBDepth;
 };

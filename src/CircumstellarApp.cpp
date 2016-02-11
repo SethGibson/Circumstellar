@@ -15,20 +15,18 @@ void Circumstellar::setup()
 	mBlackHole = CS_Dust::BlackHole::create();
 	mDustCloud = CS_Dust::DustCloud::create(S_MAX_DUST, mMaxDist, 1.0f, mCamera);
 	
-	//mCtrl.setCamera(&mCamera);
+	setupDS();
 	gl::enableAdditiveBlending();
 
 }
 
 void Circumstellar::mouseDown( MouseEvent event )
 {
-	//mCtrl.mouseDown(event);
 	mDustCloud->MouseSpawn(vec2(event.getPos()));
 }
 
 void Circumstellar::mouseDrag(MouseEvent event)
 {
-	//mCtrl.mouseDrag(event);
 	mouseDown(event);
 }
 
@@ -50,6 +48,8 @@ void Circumstellar::keyDown(KeyEvent event)
 
 void Circumstellar::update()
 {
+	updateDepth();
+
 	mDustCloud->Update();
 
 	vector<Color> colorList
@@ -78,11 +78,18 @@ void Circumstellar::draw()
 	mBlackHole->Draw();
 	gl::popModelMatrix();
 
+	gl::setMatricesWindow(getWindowSize());
+	gl::color(Color::white());
+	gl::draw(gl::Texture2d::create(*mRGBDepth), Rectf(0, 0, getWindowWidth(), getWindowHeight()));
 	if (mDrawGUI) {
-		gl::setMatricesWindow(getWindowSize());
 		gl::disableDepthRead();
 		mGUI->draw();
 	}
+}
+
+void Circumstellar::cleanup()
+{
+	mDS->stop();
 }
 
 void Circumstellar::setupGUI()
@@ -133,6 +140,50 @@ void Circumstellar::setupGUI()
 	mGUI->addParam("paramD2b", &mParamD2b, "label='L2 Color2'", false);
 	mGUI->addParam("paramD3a", &mParamD3a, "label='L3 Color1'", false);
 	mGUI->addParam("paramD3b", &mParamD3b, "label='L3 Color2'", false);
+}
+
+void Circumstellar::setupDS()
+{
+	mDS = CinderDSAPI::create();
+	mDS->init();
+
+	mDS->initDepth(FrameSize::DEPTHSD, 60);
+	mDS->initRgb(FrameSize::RGBVGA, 60);
+	mRGBDepth = Surface8u::create(480, 360, false, SurfaceChannelOrder::RGB);
+
+	mDS->start();
+}
+
+void Circumstellar::updateDepth()
+{
+	mDS->update();
+	auto depth = mDS->getDepthFrame();
+	auto iter = mRGBDepth->getIter();
+	auto diter = depth->getIter();
+	auto dd = mDS->getDepthSize();
+
+	while (iter.line())
+	{
+		while (iter.pixel())
+		{
+			auto x = iter.x();
+			auto y = iter.y();
+			iter.r() = 0.0f;
+			iter.g() = 0.0f;
+			iter.b() = 0.0f;
+			if (x % 4 == 0 && y % 4 == 0)
+			{
+				auto d = (float)depth->getValue(ivec2(x, y));
+				if (d < 1500.0f)
+				{
+					Color8u c = (Color8u)mDS->getColorFromDepthImage((float)x, (float)y, d);
+					iter.r() = c.r;
+					iter.g() = c.g;
+					iter.b() = c.b;
+				}
+			}
+		}
+	}
 }
 
 void prepareSettings(App::Settings *pSettings)
