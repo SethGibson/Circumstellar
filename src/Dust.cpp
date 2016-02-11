@@ -27,22 +27,22 @@ namespace CS_Dust
 
 	}
 
-	DustCloud::DustCloud(string pVertShader, string pFragShader,	string pTexture, 
-		size_t pMax, float pDist, float pRadius, 
-		Circumstellar *pParent) : mMaxDust(pMax), mMaxDist(pDist), mCutoffDist(1.75f), mMaxRadius(pRadius), mTargetZ(2.5f)
+	//, , , S_MAX_DUST, mMaxDist, 1.0f, this
+	DustCloud::DustCloud(size_t pMax, float pDist, float pRadius, const CameraPersp  &pCam) :
+		mMaxDust(pMax), mMaxDist(pDist), mCutoffDist(1.75f), mMaxRadius(pRadius), mTargetZ(2.5f), mCam(pCam)
 	{
-		mDustTex = gl::Texture2d::create(loadImage(loadAsset(pTexture)));
+		mDustTex = gl::Texture2d::create(loadImage(loadAsset("textures/TX_Sprite.png")));
 		
-		mShaderRender = gl::GlslProg::create(pParent->loadAsset(pVertShader), pParent->loadAsset(pFragShader));
+		mShaderRender = gl::GlslProg::create(loadAsset("shaders/dust_cloud.vert"), loadAsset("shaders/dust_cloud.frag"));
 		mShaderRender->uniform("u_Sampler", 0);
 		mShaderRender->uniform("u_Max", pDist);
 
 		setupDust();
 	}
 
-	DustCloudRef DustCloud::create(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent)
+	DustCloudRef DustCloud::create(size_t pMax, float pDist, float pRadius, const CameraPersp  &pCam)
 	{
-		return DustCloudRef(new DustCloud(pVertShader, pFragShader, pTexture, pMax, pDist, pRadius, pParent));
+		return DustCloudRef(new DustCloud(pMax, pDist, pRadius, pCam));
 	}
 
 	void DustCloud::setupDust()
@@ -105,7 +105,7 @@ namespace CS_Dust
 		mDustData->bufferData(mParticles.size()*sizeof(Dust), mParticles.data(), GL_DYNAMIC_DRAW);
 	}
 
-	void DustCloud::Draw(const CameraPersp &pCam)
+	void DustCloud::Draw()
 	{
 		gl::color(Color::white());
 		{
@@ -114,9 +114,9 @@ namespace CS_Dust
 		}
 	}
 
-	void DustCloud::MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam)
+	void DustCloud::MouseSpawn(const vec2 &pMousePos)
 	{
-		auto ray = pCam.generateRay(pMousePos, getWindowSize());
+		auto ray = mCam.generateRay(pMousePos, getWindowSize());
 
 		float dist;
 		float spawnDist = mMaxDist - 0.1f;

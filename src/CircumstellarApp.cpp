@@ -8,12 +8,13 @@ void Circumstellar::setup()
 	mDrawGUI = true;
 
 	mMaxDist = 3.0f;
-	mBlackHole = CS_Dust::BlackHole::create("meshes/MSH_CS.obj", "shaders/black_hole.vert", "shaders/black_hole.frag", "textures/TX_BlackHole.tif", this);
-	mDustCloud = CS_Dust::DustCloud::create("shaders/dust_cloud.vert", "shaders/dust_cloud.frag", "textures/TX_Sprite.png", S_MAX_DUST, mMaxDist, 1.0f, this);
 	
 	mCamera.setPerspective(90.0f, getWindowAspectRatio(), 0.01f, 100.0f);
-	mCamera.lookAt(vec3(0,0,mMaxDist), vec3(), vec3(0, 1, 0));
+	mCamera.lookAt(vec3(0, 0, mMaxDist), vec3(), vec3(0, 1, 0));
 
+	mBlackHole = CS_Dust::BlackHole::create();
+	mDustCloud = CS_Dust::DustCloud::create(S_MAX_DUST, mMaxDist, 1.0f, mCamera);
+	
 	//mCtrl.setCamera(&mCamera);
 	gl::enableAdditiveBlending();
 
@@ -22,7 +23,7 @@ void Circumstellar::setup()
 void Circumstellar::mouseDown( MouseEvent event )
 {
 	//mCtrl.mouseDown(event);
-	mDustCloud->MouseSpawn(vec2(event.getPos()), vec2(getWindowSize()), mCamera);
+	mDustCloud->MouseSpawn(vec2(event.getPos()));
 }
 
 void Circumstellar::mouseDrag(MouseEvent event)
@@ -70,7 +71,7 @@ void Circumstellar::draw()
 	gl::setMatrices(mCamera);
 
 	gl::color(Color::white());
-	mDustCloud->Draw(mCamera);
+	mDustCloud->Draw();
 
 	gl::pushModelMatrix();
 	gl::scale(vec3(1.5));

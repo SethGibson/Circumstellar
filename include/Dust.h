@@ -32,16 +32,16 @@ namespace CS_Dust
 	class DustCloud
 	{
 	public:
-		static DustCloudRef create(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
+		static DustCloudRef create(size_t pMax, float pDist, float pRadius, const CameraPersp &pCam);
 		void Update();
-		void Draw(const CameraPersp &pCam);	//Debug billboards
+		void Draw();	//Debug billboards
 
 		// DEBUG
-		void MouseSpawn(const vec2 &pMousePos, const vec2 &pWindowSize, const CameraPersp & pCam);
+		void MouseSpawn(const vec2 &pMousePos);
 		//
 	protected:
 		DustCloud() {}
-		DustCloud(string pVertShader, string pFragShader, string pTexture, size_t pMax, float pDist, float pRadius, Circumstellar *pParent);
+		DustCloud(size_t pMax, float pDist, float pRadius, const CameraPersp &pCam);
 
 	private:
 		void setupDust();
@@ -57,5 +57,7 @@ namespace CS_Dust
 		gl::BatchRef	mDustDraw;
 
 		gl::Texture2dRef	mDustTex;
+
+		CameraPersp mCam;
 	};
 }

@@ -16,7 +16,7 @@ namespace CS_Dust
 	class BlackHole
 	{
 	public:
-		static BlackHoleRef create(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent);
+		static BlackHoleRef create();
 		void Draw();
 
 		void SetK(const vec4 &pK) { mK = pK; }
@@ -25,8 +25,7 @@ namespace CS_Dust
 		void SetColors(const vector<Color> &pColors);
 		void SetElapsed(const float &pElapsed) { mElapsed = pElapsed; }
 	protected:
-		BlackHole() {}
-		BlackHole(string pObjFile, string pVertShader, string pFragShader, string pTexture, Circumstellar *pParent);
+		BlackHole();
 
 	private:
 		gl::GlslProgRef			mShader;
