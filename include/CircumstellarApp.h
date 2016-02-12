@@ -38,7 +38,12 @@ private:
 	CameraPersp		mCamera;
 	CameraUi		mCtrl;
 
-	bool			mDrawGUI;
+	bool			mDrawGUI,
+					mIsCapturing;
+
+	int				mTimeCapturing, 
+					mTimePaused;
+
 	float			mMaxDist;
 
 	float			mParamK1, mParamK2, mParamK3, mParamK4;
@@ -53,4 +58,5 @@ private:
 
 	CinderDSRef		mDS;
 	Surface8uRef	mRGBDepth;
+	gl::GlslProgRef	mShaderDepth;
 };

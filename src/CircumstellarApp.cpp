@@ -1,23 +1,29 @@
 #include "CircumstellarApp.h"
 
-static size_t S_MAX_DUST = 5000;
+const size_t kMaxDust = 20000;
+const int kTimeCapture = 300;
+const int kTimePaused = 500;
 
 void Circumstellar::setup()
 {
-	setupGUI();
 	mDrawGUI = true;
-
 	mMaxDist = 3.0f;
+	mIsCapturing = false;
+	mTimeCapturing = kTimeCapture;
+	mTimePaused = kTimePaused;
+
+	setupGUI();
 	
 	mCamera.setPerspective(90.0f, getWindowAspectRatio(), 0.01f, 100.0f);
 	mCamera.lookAt(vec3(0, 0, mMaxDist), vec3(), vec3(0, 1, 0));
 
 	mBlackHole = CS_Dust::BlackHole::create();
-	mDustCloud = CS_Dust::DustCloud::create(S_MAX_DUST, mMaxDist, 1.0f, mCamera);
-	
+	mDustCloud = CS_Dust::DustCloud::create(kMaxDust, mMaxDist, 1.0f, mCamera);
+	mShaderDepth = gl::GlslProg::create(loadAsset("shaders/depth_tex.vert"), loadAsset("shaders/depth_tex.frag"));
+	mShaderDepth->uniform("u_SamplerDepth", 0);
+
 	setupDS();
 	gl::enableAdditiveBlending();
-
 }
 
 void Circumstellar::mouseDown( MouseEvent event )
@@ -48,7 +54,29 @@ void Circumstellar::keyDown(KeyEvent event)
 
 void Circumstellar::update()
 {
-	updateDepth();
+
+	if (!mIsCapturing) {
+		if (mTimeCapturing > 0) {
+			updateDepth();
+			mTimeCapturing -= 1;
+		}
+		else if (mTimeCapturing==0) {
+			mDustCloud->CapturePoints(mRGBDepth);
+			mIsCapturing = true;
+			mTimeCapturing = kTimeCapture;
+		}
+	}
+	else {
+		if (mIsCapturing) {
+			if (mTimePaused > 0) {
+				mTimePaused -= 1;
+			}
+			else {
+				mIsCapturing = false;
+				mTimePaused = kTimePaused;
+			}
+		}
+	}
 
 	mDustCloud->Update();
 
@@ -80,7 +108,18 @@ void Circumstellar::draw()
 
 	gl::setMatricesWindow(getWindowSize());
 	gl::color(Color::white());
-	gl::draw(gl::Texture2d::create(*mRGBDepth), Rectf(0, 0, getWindowWidth(), getWindowHeight()));
+	if (!mIsCapturing) {
+		gl::pushModelMatrix();
+		gl::translate(getWindowWidth(), 0);
+		gl::scale(-1, 1);
+		{
+			auto tex = gl::Texture2d::create(*mRGBDepth);
+			gl::ScopedTextureBind depthTex(tex, 0);
+			gl::ScopedGlslProg depthShader(mShaderDepth);
+			gl::drawSolidRect(Rectf(0, 0, getWindowWidth(), getWindowHeight()));
+		}
+		gl::popModelMatrix();
+	}
 	if (mDrawGUI) {
 		gl::disableDepthRead();
 		mGUI->draw();
@@ -147,9 +186,9 @@ void Circumstellar::setupDS()
 	mDS = CinderDSAPI::create();
 	mDS->init();
 
-	mDS->initDepth(FrameSize::DEPTHSD, 60);
+	mDS->initDepth(FrameSize::DEPTHQVGA, 60);
 	mDS->initRgb(FrameSize::RGBVGA, 60);
-	mRGBDepth = Surface8u::create(480, 360, false, SurfaceChannelOrder::RGB);
+	mRGBDepth = Surface8u::create(320, 240, false, SurfaceChannelOrder::RGB);
 
 	mDS->start();
 }
@@ -171,16 +210,13 @@ void Circumstellar::updateDepth()
 			iter.r() = 0.0f;
 			iter.g() = 0.0f;
 			iter.b() = 0.0f;
-			if (x % 4 == 0 && y % 4 == 0)
+			auto d = (float)depth->getValue(ivec2(x, y));
+			if (d < 1500.0f)
 			{
-				auto d = (float)depth->getValue(ivec2(x, y));
-				if (d < 1500.0f)
-				{
-					Color8u c = (Color8u)mDS->getColorFromDepthImage((float)x, (float)y, d);
-					iter.r() = c.r;
-					iter.g() = c.g;
-					iter.b() = c.b;
-				}
+				Color8u c = (Color8u)mDS->getColorFromDepthImage((float)x, (float)y, d);
+				iter.r() = c.r;
+				iter.g() = c.g;
+				iter.b() = c.b;
 			}
 		}
 	}

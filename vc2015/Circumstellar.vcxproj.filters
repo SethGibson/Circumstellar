@@ -75,5 +75,11 @@
     <None Include="..\assets\shaders\sprite.vert">
       <Filter>Source Files\shaders\test</Filter>
     </None>
+    <None Include="..\assets\shaders\depth_tex.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\depth_tex.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

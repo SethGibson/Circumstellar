@@ -112,6 +112,8 @@
     <None Include="..\assets\shaders\black_hole.frag" />
     <None Include="..\assets\shaders\black_hole.vert" />
     <None Include="..\assets\shaders\blur.frag" />
+    <None Include="..\assets\shaders\depth_tex.frag" />
+    <None Include="..\assets\shaders\depth_tex.vert" />
     <None Include="..\assets\shaders\dust_cloud.frag" />
     <None Include="..\assets\shaders\dust_cloud.vert" />
     <None Include="..\assets\shaders\dust_cloud_tf.vert" />
