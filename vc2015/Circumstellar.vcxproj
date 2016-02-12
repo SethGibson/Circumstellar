@@ -46,7 +46,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\..\lib\Cinder\include"</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\..\..\..\lib\Cinder\include;$(DSROOT)\Include;..\..\..\..\lib\Cinder\blocks\Cinder-DSAPI\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -60,7 +60,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"..\..\..\..\lib\Cinder\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\lib\Cinder\lib\msw\$(PlatformTarget);$(DSROOT)\Lib</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -70,7 +70,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\..\lib\Cinder\include"</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\..\..\..\lib\Cinder\include;$(DSROOT)\Include;..\..\..\..\lib\Cinder\blocks\Cinder-DSAPI\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -86,7 +86,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>cinder-$(PlatformToolset).lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"..\..\..\..\lib\Cinder\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\lib\Cinder\lib\msw\$(PlatformTarget);$(DSROOT)\Lib</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -97,11 +97,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\lib\Cinder\blocks\Cinder-DSAPI\src\CiDSAPI.h" />
     <ClInclude Include="..\include\BlackHole.h" />
     <ClInclude Include="..\include\CircumstellarApp.h" />
     <ClInclude Include="..\include\Dust.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\lib\Cinder\blocks\Cinder-DSAPI\src\CiDSAPI.cpp" />
     <ClCompile Include="..\src\BlackHole.cpp" />
     <ClCompile Include="..\src\CircumstellarApp.cpp" />
     <ClCompile Include="..\src\Dust.cpp" />
@@ -110,6 +112,8 @@
     <None Include="..\assets\shaders\black_hole.frag" />
     <None Include="..\assets\shaders\black_hole.vert" />
     <None Include="..\assets\shaders\blur.frag" />
+    <None Include="..\assets\shaders\depth_tex.frag" />
+    <None Include="..\assets\shaders\depth_tex.vert" />
     <None Include="..\assets\shaders\dust_cloud.frag" />
     <None Include="..\assets\shaders\dust_cloud.vert" />
     <None Include="..\assets\shaders\dust_cloud_tf.vert" />

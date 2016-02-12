@@ -3,7 +3,7 @@
 
 namespace CS_Dust
 {
-	Dust::Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize=0, int pStartOffset=0, Color pTint=Color::white()) : Live(true)
+	Dust::Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize=0, int pStartOffset=0, ColorA pTint=ColorA(1,1,1,1)) : Live(true)
 	{
 		if (pLinear > 0 && pAngular>0)
 			Speed = vec2(pLinear, pAngular);
@@ -18,23 +18,22 @@ namespace CS_Dust
 		Distance = vec2(pDepth);
 		Size = pSize <= 0 ? randFloat(0.005f, 0.015f) : pSize;
 		Start = pStartOffset;
-		Alpha = 1.0f;
 
 		float x = math<float>::sin(AngleRadii.x)*AngleRadii.y;
 		float y = math<float>::cos(AngleRadii.x)*AngleRadii.y;
 		DrawPos = vec3(x, y, pDepth);
 		Tint = pTint;
-
+		Tint.a = randFloat(0.25f, 1.f);
+		Alpha = Tint.a;
 	}
 
-	//, , , S_MAX_DUST, mMaxDist, 1.0f, this
 	DustCloud::DustCloud(size_t pMax, float pDist, float pRadius, const CameraPersp  &pCam) :
 		mMaxDust(pMax), mMaxDist(pDist), mCutoffDist(1.75f), mMaxRadius(pRadius), mTargetZ(2.5f), mCam(pCam)
 	{
 		mDustTex = gl::Texture2d::create(loadImage(loadAsset("textures/TX_Sprite.png")));
 		
 		mShaderRender = gl::GlslProg::create(loadAsset("shaders/dust_cloud.vert"), loadAsset("shaders/dust_cloud.frag"));
-		mShaderRender->uniform("u_Sampler", 0);
+		mShaderRender->uniform("u_SamplerRGB", 0);
 		mShaderRender->uniform("u_Max", pDist);
 
 		setupDust();
@@ -54,14 +53,13 @@ namespace CS_Dust
 
 		geom::BufferLayout attribs;
 		attribs.append(geom::CUSTOM_0, 3, sizeof(Dust), offsetof(Dust, DrawPos), 1);
-		attribs.append(geom::CUSTOM_1, 3, sizeof(Dust), offsetof(Dust, Tint), 1);
+		attribs.append(geom::CUSTOM_1, 4, sizeof(Dust), offsetof(Dust, Tint), 1);
 		attribs.append(geom::CUSTOM_2, 1, sizeof(Dust), offsetof(Dust, Size), 1);
-		attribs.append(geom::CUSTOM_3, 1, sizeof(Dust), offsetof(Dust, Alpha), 1);
 
 		mDustData = gl::Vbo::create(GL_ARRAY_BUFFER, mParticles, GL_DYNAMIC_DRAW);
 		auto mesh = gl::VboMesh::create(geom::Plane().axes(vec3(1, 0, 0), vec3(0, 1, 0)).size(vec2(1)));
 		mesh->appendVbo(attribs, mDustData);
-		mDustDraw = gl::Batch::create(mesh, mShaderRender, { {geom::CUSTOM_0, "i_Position"},{ geom::CUSTOM_1, "i_Tint" },{geom::CUSTOM_2, "i_Size"},{ geom::CUSTOM_3, "i_Alpha" } });
+		mDustDraw = gl::Batch::create(mesh, mShaderRender, { {geom::CUSTOM_0, "i_Position"},{ geom::CUSTOM_1, "i_Tint" },{geom::CUSTOM_2, "i_Size"} });
 	}
 
 	void DustCloud::Update()
@@ -93,7 +91,7 @@ namespace CS_Dust
 						float y = math<float>::cos(d->AngleRadii.x)*d->AngleRadii.z;
 						d->DrawPos = vec3(x, y, d->Distance.y);
 
-						d->Alpha = lmap<float>(d->Distance.y, mCutoffDist, d->Distance.x, 0.0f, 1.0f);
+						d->Tint.a = lmap<float>(d->Distance.y, mCutoffDist, d->Distance.x, 0.0f, d->Alpha);
 					}
 					else
 						d->Live = false;
@@ -139,7 +137,46 @@ namespace CS_Dust
 				g = randFloat(0.0f, 0.25f);
 			}
 			mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.0065f,0.02f), 120
-				, Color(r,g,b)));
+				, ColorA(r,g,b, randFloat(0.5f,0.95f))));
+		}
+	}
+
+	void DustCloud::CapturePoints(const Surface8uRef & pSurface)
+	{
+		auto iter = pSurface->getIter();
+		auto pxScale = vec2(getWindowSize()) / vec2(320.0f, 240.0f);
+
+		float framePad = 0;
+		while (iter.line())
+		{
+			while (iter.pixel())
+			{
+				if (iter.r() > 0 || iter.g() > 0 || iter.b() > 0)
+				{
+					if (iter.x() % 2 == 0 && iter.y() % 2 == 0) {
+						auto x = getWindowWidth() -(iter.x()*pxScale.x);
+						auto y = iter.y()*pxScale.y;
+						auto ray = mCam.generateRay(vec2(x, y), getWindowSize());
+
+						float dist;
+						float spawnDist = mMaxDist - 0.1f;
+						if (ray.calcPlaneIntersection(vec3(0, 0, spawnDist), vec3(0, 0, -1), &dist))
+						{
+							auto rayPos = ray.calcPosition(dist);
+							auto angle = math<float>::atan2(rayPos.x, rayPos.y);
+							if (angle < 0)
+								angle += (2.0f*M_PI);
+
+							auto rad = length(vec2(rayPos));
+
+							mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.0065f, 0.015f), 60+framePad
+								, ColorA(iter.r() / 255.f, iter.g() / 255.f, iter.b() / 255.f, randFloat(0.5f,0.80f))));
+							framePad += 0.025f;
+							
+						}
+					}
+				}
+			}
 		}
 	}
 } 

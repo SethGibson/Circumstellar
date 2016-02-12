@@ -29,6 +29,9 @@
     <ClCompile Include="..\src\BlackHole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\lib\Cinder\blocks\Cinder-DSAPI\src\CiDSAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\CircumstellarApp.h">
@@ -38,6 +41,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\BlackHole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\lib\Cinder\blocks\Cinder-DSAPI\src\CiDSAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,6 +74,12 @@
     </None>
     <None Include="..\assets\shaders\sprite.vert">
       <Filter>Source Files\shaders\test</Filter>
+    </None>
+    <None Include="..\assets\shaders\depth_tex.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="..\assets\shaders\depth_tex.vert">
+      <Filter>Source Files\shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

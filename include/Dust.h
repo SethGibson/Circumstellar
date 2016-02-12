@@ -13,7 +13,7 @@ namespace CS_Dust
 	struct Dust
 	{
 		Dust(){}
-		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize, int pStartOffset, Color pTint);
+		Dust(float pLinear, float pAngular, float pAngle, float pRadius, float pDepth, float pSize, int pStartOffset, ColorA pTint);
 
 		vec3		AngleRadii;	//x=Angle, y=radius init z=radius actual
 		vec3		DrawPos;
@@ -23,7 +23,7 @@ namespace CS_Dust
 		float		Alpha;
 		bool		Live;
 		int			Start;
-		Color		Tint;
+		ColorA		Tint;
 	};
 
 	class DustCloud;
@@ -39,6 +39,9 @@ namespace CS_Dust
 		// DEBUG
 		void MouseSpawn(const vec2 &pMousePos);
 		//
+
+		void CapturePoints(const Surface8uRef &pSurface);
+
 	protected:
 		DustCloud() {}
 		DustCloud(size_t pMax, float pDist, float pRadius, const CameraPersp &pCam);
