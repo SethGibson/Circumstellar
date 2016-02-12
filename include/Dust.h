@@ -5,9 +5,6 @@
 using namespace std;
 using namespace ci;
 
-class Circumstellar;
-
-
 namespace CS_Dust
 {
 	struct Dust
@@ -34,13 +31,8 @@ namespace CS_Dust
 	public:
 		static DustCloudRef create(size_t pMax, float pDist, float pRadius, const CameraPersp &pCam);
 		void Update();
-		void Draw();	//Debug billboards
-
-		// DEBUG
+		void Draw();
 		void MouseSpawn(const vec2 &pMousePos);
-		//
-
-		void CapturePoints(const Surface8uRef &pSurface);
 
 	protected:
 		DustCloud() {}

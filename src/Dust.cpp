@@ -140,43 +140,4 @@ namespace CS_Dust
 				, ColorA(r,g,b, randFloat(0.5f,0.95f))));
 		}
 	}
-
-	void DustCloud::CapturePoints(const Surface8uRef & pSurface)
-	{
-		auto iter = pSurface->getIter();
-		auto pxScale = vec2(getWindowSize()) / vec2(320.0f, 240.0f);
-
-		float framePad = 0;
-		while (iter.line())
-		{
-			while (iter.pixel())
-			{
-				if (iter.r() > 0 || iter.g() > 0 || iter.b() > 0)
-				{
-					if (iter.x() % 2 == 0 && iter.y() % 2 == 0) {
-						auto x = getWindowWidth() -(iter.x()*pxScale.x);
-						auto y = iter.y()*pxScale.y;
-						auto ray = mCam.generateRay(vec2(x, y), getWindowSize());
-
-						float dist;
-						float spawnDist = mMaxDist - 0.1f;
-						if (ray.calcPlaneIntersection(vec3(0, 0, spawnDist), vec3(0, 0, -1), &dist))
-						{
-							auto rayPos = ray.calcPosition(dist);
-							auto angle = math<float>::atan2(rayPos.x, rayPos.y);
-							if (angle < 0)
-								angle += (2.0f*M_PI);
-
-							auto rad = length(vec2(rayPos));
-
-							mParticles.push_back(Dust(-1, -1, angle, rad, spawnDist, randFloat(0.0065f, 0.015f), 60+framePad
-								, ColorA(iter.r() / 255.f, iter.g() / 255.f, iter.b() / 255.f, randFloat(0.5f,0.80f))));
-							framePad += 0.025f;
-							
-						}
-					}
-				}
-			}
-		}
-	}
 } 
